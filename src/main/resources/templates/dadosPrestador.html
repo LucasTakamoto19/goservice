@@ -46,9 +46,10 @@
 
         <h5 class="card-title mb-2 mt-5">Especialidades</h5>
 
-        <form class="d-flex gap-3 my-3" method="post" th:action="@{/prestador/dados/adicionar/especialidade}">
+        <form class="d-flex gap-3 my-3" method="post" th:action="@{/prestador/dados/adicionar/especialidade/adicionar}">
           <select class="form-select" id="servicoId" name="servicoId" required>
             <option value="" disabled selected>Selecione uma especialidade</option>
+            <option th:each="servico : ${servicos}" th:value="${servico.id}" th:text="${servico.nome}"></option>
           </select>
           <button type="submit" class="btn btn-primary" style="width: 9rem">Adicionar <i class="bi bi-plus-circle ms-2"></i></button>
         </form>
@@ -87,7 +88,7 @@
           <div class="modal-body">
             Tem certeza que deseja excluir a especialidade: <strong th:text="${especialidade.nome}"></strong>?
           </div>
-          <form class="modal-footer" method="post" th:action="@{/prestador/dados/especialidade/remover}">
+          <form class="modal-footer" method="post" th:action="@{/prestador/dados/especialidade/remover/adicionar}">
             <input type="hidden" name="servicoId" th:value="${especialidade.id}">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
             <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">Excluir</button>
