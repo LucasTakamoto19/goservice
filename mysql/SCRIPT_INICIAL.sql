@@ -5,6 +5,7 @@ USE goservice_db;
 SHOW TABLES;
 
 SELECT * FROM usuarios;
+SELECT * FROM servicos;
 
 DROP TABLE agendamentos;
 DROP TABLE prestadores_servicos;
@@ -36,3 +37,16 @@ VALUES
     ('Saúde', 'Sessão de fisioterapia para reabilitação', 'Fisioterapia de Reabilitação'),
     ('Desenvolvimento', 'Desenvolvimento de site institucional', 'Desenvolvimento de Site Institucional'),
     ('Design', 'Design de interface de usuário para aplicativos', 'Design de Interface de Aplicativo');
+    
+SELECT * FROM prestadores_servicos;
+SELECT * FROM servicos;
+SELECT * FROM usuarios;
+
+INSERT INTO prestadores_servicos (servico_id, prestador_id)
+VALUES
+    (1, 5), (2, 5), (3, 5), (4, 5), (5, 5),
+    (6, 5), (7, 5), (9, 5), (10, 5), (11, 5),
+    (1, 6), (2, 6), (3, 6), (4, 6), (5, 6),
+    (6, 6), (7, 6), (9, 6), (10, 6), (11, 6),
+    (1, 5), (2, 5), (3, 5), (4, 5), (5, 5),
+    (6, 5), (7, 5), (9, 5), (10, 5), (11, 5);
