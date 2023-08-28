@@ -14,20 +14,29 @@ import java.util.Optional;
 
 @Service
 public class PrestadorService {
-
     @Autowired
     private PrestadorRepository prestadorRepository;
 
     @Autowired
     private ServicoService servicoService;
 
-
+    public Prestador findAuthenticated(Authentication authentication){
+        if(authentication != null && authentication.isAuthenticated()){
+            Optional<Prestador> prestador = prestadorRepository.findByEmail(authentication.getName());
+            if(prestador.isPresent()){
+                return prestador.get();
+            } else {
+                throw new UsuarioNaoEncontradoException();
+            }
+        } else {
+            throw new UsuarioNaoAutenticadoException();
+        }
+    }
     public Prestador findById(Long id){
         Optional<Prestador> prestador = prestadorRepository.findById(id);
-        if (prestador.isPresent()){
+        if(prestador.isPresent()){
             return prestador.get();
-        }
-        else {
+        }else{
             throw new UsuarioNaoEncontradoException();
         }
     }
@@ -35,25 +44,10 @@ public class PrestadorService {
     public Prestador update(Prestador prestador){
         Prestador updatedPrestador = this.findById(prestador.getId());
         updatedPrestador.setNome(prestador.getNome());
+        updatedPrestador.setEmail(prestador.getEmail());
         updatedPrestador.setDescricao(prestador.getDescricao());
         updatedPrestador.setTaxaPorHora(prestador.getTaxaPorHora());
         return prestadorRepository.save(updatedPrestador);
-    }
-
-
-    public Prestador findAuthenticated(Authentication authentication){
-        if(authentication != null && authentication.isAuthenticated()){
-            Optional<Prestador> prestador = prestadorRepository.findByEmail(authentication.getName());
-            if (prestador.isPresent()){
-                return prestador.get();
-            }
-            else {
-                throw new UsuarioNaoEncontradoException();
-            }
-        }
-        else {
-            throw new UsuarioNaoAutenticadoException();
-        }
     }
 
     public void addServicoPrestador(Authentication authentication, Long id){
@@ -70,7 +64,7 @@ public class PrestadorService {
         prestadorRepository.save(prestador);
     }
 
-    public List<Prestador> findfByServicoId(Long id){
+    public List<Prestador> findByServicoId(Long id){
         return prestadorRepository.findByServicoId(id);
     }
 }
