@@ -41,6 +41,7 @@ VALUES
 SELECT * FROM prestadores_servicos;
 SELECT * FROM servicos;
 SELECT * FROM usuarios;
+SELECT * FROM agendamentos;
 
 INSERT INTO prestadores_servicos (servico_id, prestador_id)
 VALUES
