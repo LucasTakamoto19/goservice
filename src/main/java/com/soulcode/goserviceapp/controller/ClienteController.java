@@ -59,7 +59,7 @@ public class ClienteController {
         try {
             clienteService.update(cliente);
             attributes.addFlashAttribute("successMessage", "Dados alterados.");
-        } catch (UsuarioNaoEncontradoException ex) {
+        } catch (UsuarioNaoEncontradoException e) {
             attributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
             attributes.addFlashAttribute("errorMessage", "Erro ao alterar dados cadastrais.");
