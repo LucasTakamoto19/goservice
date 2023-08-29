@@ -1,6 +1,5 @@
 package com.soulcode.goserviceapp.service;
 
-
 import com.soulcode.goserviceapp.domain.Agendamento;
 import com.soulcode.goserviceapp.domain.Cliente;
 import com.soulcode.goserviceapp.domain.Prestador;
@@ -20,12 +19,11 @@ import java.util.Optional;
 
 @Service
 public class AgendamentoService {
-
     @Autowired
     private AgendamentoRepository agendamentoRepository;
 
     @Autowired
-    private ServicoService servicoService;
+    private  ServicoService servicoService;
 
     @Autowired
     private ClienteService clienteService;
@@ -33,16 +31,12 @@ public class AgendamentoService {
     @Autowired
     private PrestadorService prestadorService;
 
-
-
     public Agendamento findById(Long id){
         Optional<Agendamento> agendamento = agendamentoRepository.findById(id);
-        if (agendamento.isPresent()){
+        if(agendamento.isPresent()) {
             return agendamento.get();
         }
-        else {
-            throw new AgendamentoNaoEncontradoException();
-        }
+        throw new AgendamentoNaoEncontradoException();
     }
 
     public Agendamento create(Authentication authentication, Long servicoId, Long prestadorId, LocalDate data, LocalTime hora){
@@ -55,6 +49,7 @@ public class AgendamentoService {
         agendamento.setServico(servico);
         agendamento.setData(data);
         agendamento.setHora(hora);
+
         return agendamentoRepository.save(agendamento);
     }
 
@@ -65,13 +60,13 @@ public class AgendamentoService {
 
     public List<Agendamento> findByPrestador(Authentication authentication){
         Prestador prestador = prestadorService.findAuthenticated(authentication);
-        return agendamentoRepository.findByPrestadorEmail(prestador.getEmail());
+        return  agendamentoRepository.findByPrestadorEmail(prestador.getEmail());
     }
 
-    public void cancelAgendaPrestador(Authentication authentication, Long id) {
+    public void cancelAgendaPrestador(Authentication authentication, Long id){
         Prestador prestador = prestadorService.findAuthenticated(authentication);
         Agendamento agendamento = findById(id);
-        if (agendamento.getStatusAgendamento().equals(StatusAgendamento.AGUARDANDO_CONFIRMACAO)) {
+        if(agendamento.getStatusAgendamento().equals(StatusAgendamento.AGUARDANDO_CONFIRMACAO)){
             agendamento.setStatusAgendamento(StatusAgendamento.CANCELADO_PELO_PRESTADOR);
             agendamentoRepository.save(agendamento);
             return;
@@ -82,7 +77,7 @@ public class AgendamentoService {
     public void confirmAgenda(Authentication authentication, Long id){
         Prestador prestador = prestadorService.findAuthenticated(authentication);
         Agendamento agendamento = findById(id);
-        if (agendamento.getStatusAgendamento().equals(StatusAgendamento.AGUARDANDO_CONFIRMACAO)){
+        if(agendamento.getStatusAgendamento().equals(StatusAgendamento.AGUARDANDO_CONFIRMACAO)){
             agendamento.setStatusAgendamento(StatusAgendamento.CONFIRMADO);
             agendamentoRepository.save(agendamento);
             return;
@@ -105,8 +100,7 @@ public class AgendamentoService {
         Cliente cliente = clienteService.findAuthenticated(authentication);
         Agendamento agendamento = findById(id);
         if (agendamento.getStatusAgendamento().equals(StatusAgendamento.CONFIRMADO)){
-            agendamento.setStatusAgendamento(StatusAgendamento.CONCLUIDO
-            );
+            agendamento.setStatusAgendamento(StatusAgendamento.CONCLUIDO);
             agendamentoRepository.save(agendamento);
             return;
         }

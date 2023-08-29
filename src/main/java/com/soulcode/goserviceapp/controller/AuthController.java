@@ -6,6 +6,7 @@ import com.soulcode.goserviceapp.service.UsuarioService;
 import com.soulcode.goserviceapp.service.exceptions.SenhaIncorretaException;
 import com.soulcode.goserviceapp.service.exceptions.UsuarioNaoAutenticadoException;
 import com.soulcode.goserviceapp.service.exceptions.UsuarioNaoEncontradoException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -26,35 +27,31 @@ public class AuthController {
     @GetMapping(value = "/login")
     public ModelAndView login(@RequestParam(name = "error", required = false) String error) {
         ModelAndView mv = new ModelAndView("login");
-        if (error != null){
-            mv.addObject("errorMessage", "erro ao autenticar no sistema. Verifique suas credenciais");
+        if(error != null) {
+            mv.addObject("errorMessage", "Erro ao autenticar no sistema. Verifique suas credenciais.");
         }
         return mv;
     }
 
     @GetMapping(value = "/cadastro")
-    public String cadastro(){
+    public String cadastro() {
         return "cadastroCliente";
     }
 
-
-
     @PostMapping(value = "/cadastro")
-    public String cadastrarCliente(Cliente cliente, RedirectAttributes attributes){
+    public String cadastrarCliente(Cliente cliente, RedirectAttributes attributes) {
         try {
             authService.createCliente(cliente);
-            attributes.addFlashAttribute("successMessage", "Cliente cadastrado com sucesso!");
+            attributes.addFlashAttribute("successMessage", "Novo cliente cadastrado com sucesso!");
             return "redirect:/auth/login";
+        } catch (Exception ex) {
+            attributes.addFlashAttribute("errorMessage", "Erro ao cadastrar novo cliente.");
+            return "redirect:/auth/cadastro";
         }
-        catch (Exception e){
-            attributes.addFlashAttribute("errorMessage", "Erro ao cadastrar novo cliente...");
-            return "redirect:/auth/login";
-        }
-
     }
 
     @GetMapping(value = "/password/new")
-    public String alterarSenha(){
+    public String alterarSenha() {
         return "alterarSenha";
     }
 
@@ -64,14 +61,13 @@ public class AuthController {
             @RequestParam(name = "senhaNova") String senhaNova,
             Authentication authentication,
             RedirectAttributes attributes
-            ){
+    ) {
         try {
             authService.updatePassword(authentication, senhaAtual, senhaNova);
-            attributes.addFlashAttribute("sucessMessage", "Senha alterada.");
-        }catch (UsuarioNaoAutenticadoException | UsuarioNaoEncontradoException | SenhaIncorretaException e){
-            attributes.addFlashAttribute("errorMessage", e.getMessage());
-        }
-        catch (Exception e){
+            attributes.addFlashAttribute("successMessage", "Senha alterada.");
+        } catch (UsuarioNaoAutenticadoException | UsuarioNaoEncontradoException | SenhaIncorretaException ex) {
+            attributes.addFlashAttribute("errorMessage", ex.getMessage());
+        } catch (Exception ex) {
             attributes.addFlashAttribute("errorMessage", "Erro ao tentar alterar a senha.");
         }
         return "redirect:/auth/password/new";
